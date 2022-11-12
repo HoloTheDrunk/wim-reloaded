@@ -18,12 +18,20 @@ class _ItemCardState extends State<ItemCard> {
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
         boxShadow: [BoxShadow(blurRadius: 4.0)],
-        color: Colors.blue,
+        color: Colors.blueGrey,
       ),
       // Row(Image, Column(Row(Image), Row(Text)))
       child: Row(
         children: [
-          Image.asset(widget.item.mainPart.path),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                  boxShadow: [BoxShadow(blurRadius: 4.0, color: Colors.cyan)]),
+              child: Image.asset(widget.item.mainPart.path),
+            ),
+          ),
         ],
       ),
     );
@@ -56,6 +64,7 @@ class Part {
   int owned;
 
   Part({required this.type, required this.required, required this.owned});
+  Part.main(int owned) : this(type: PartType.main, required: 1, owned: owned);
 }
 
 /// The main [Part] of an item's set

@@ -27,12 +27,8 @@ class Inventory extends StatelessWidget {
             return ItemCard(
               item: Item(
                 mainPart: MainPart(
-                  part: Part(
-                    type: PartType.stock,
-                    required: 1,
-                    owned: 0,
-                  ),
-                  path: "assets/items/weapons/parts/stock.png",
+                  part: Part.main(1),
+                  path: "assets/items/weapons/main/destreza_prime.png",
                 ),
                 parts: [],
               ),
