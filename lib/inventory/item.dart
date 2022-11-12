@@ -72,13 +72,9 @@ class MainPart extends Part {
   final String path;
 
   MainPart({
-    required Part part,
+    required int owned,
     required this.path,
-  }) : super(
-          owned: part.owned,
-          required: part.required,
-          type: part.type,
-        );
+  }) : super.main(owned);
 }
 
 /// Type of a [Part]
