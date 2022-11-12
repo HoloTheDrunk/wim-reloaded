@@ -1,12 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'item.dart';
 
-class Inventory extends StatelessWidget {
-  Inventory({super.key, this.padding});
+class InventoryGrid extends StatelessWidget {
+  InventoryGrid({super.key, this.padding});
 
   final double? padding;
-  final List<Item> items = [];
+  final Inventory inventory = Inventory.fromJson(
+    jsonDecode(File("assets/inventory.json").readAsStringSync()),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -37,5 +41,32 @@ class Inventory extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class Inventory {
+  List<Item> items = [];
+
+  Inventory({required this.items});
+  Inventory.fromJson(List<dynamic> json) {
+    items = json
+        .map(
+          (itemJson) => Item(
+            mainPart: MainPart(
+              owned: itemJson['main']['owned'],
+              path: itemJson['main']['path'],
+            ),
+            parts: (itemJson['parts'] as List<dynamic>)
+                .map(
+                  (partJson) => Part(
+                    type: PartType.values.byName(partJson['type']),
+                    required: partJson['required'],
+                    owned: partJson['owned'],
+                  ),
+                )
+                .toList(),
+          ),
+        )
+        .toList();
   }
 }
