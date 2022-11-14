@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:wimr/inventory/inventory.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Wim());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Wim extends StatelessWidget {
+  const Wim({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.dark(useMaterial3: true),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
       debugShowCheckedModeBanner: false,
     );
