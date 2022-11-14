@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 
@@ -30,10 +31,8 @@ class InventoryGrid extends StatelessWidget {
           itemBuilder: (BuildContext context, index) {
             return ItemCard(
               item: Item(
-                mainPart: MainPart(
-                  owned: 1,
-                  path: "assets/items/weapons/main/destreza_prime.png",
-                ),
+                name: "destreza_prime.png",
+                type: ItemType.weapon,
                 parts: [],
               ),
             );
@@ -45,28 +44,9 @@ class InventoryGrid extends StatelessWidget {
 }
 
 class Inventory {
-  List<Item> items = [];
+  final List<Item> items;
 
   Inventory({required this.items});
-  Inventory.fromJson(List<dynamic> json) {
-    items = json
-        .map(
-          (itemJson) => Item(
-            mainPart: MainPart(
-              owned: itemJson['main']['owned'],
-              path: itemJson['main']['path'],
-            ),
-            parts: (itemJson['parts'] as List<dynamic>)
-                .map(
-                  (partJson) => Part(
-                    type: PartType.values.byName(partJson['type']),
-                    required: partJson['required'],
-                    owned: partJson['owned'],
-                  ),
-                )
-                .toList(),
-          ),
-        )
-        .toList();
-  }
+  Inventory.fromJson(List<dynamic> json)
+      : items = json.map((itemJson) => Item.fromJson(itemJson)).toList();
 }

@@ -29,7 +29,7 @@ class _ItemCardState extends State<ItemCard> {
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(100.0)),
                   boxShadow: [BoxShadow(blurRadius: 4.0, color: Colors.cyan)]),
-              child: Image.asset(widget.item.mainPart.path),
+              child: Image.asset(widget.item.getImagePath()),
             ),
           ),
         ],
@@ -41,21 +41,39 @@ class _ItemCardState extends State<ItemCard> {
 /// A set comprised of a main blueprint path and [Part]s, along with nullable
 /// price information
 class Item {
-  final MainPart mainPart;
+  final ItemType type;
+  final String name;
   final List<Part> parts;
   Price? currentPrice;
 
   Item({
-    required this.mainPart,
+    required this.type,
+    required this.name,
     required this.parts,
     this.currentPrice,
   });
+
+  String getImagePath() {
+    return "assets/items/${type.name}s/main/$name";
+  }
+
+  Item.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        type = ItemType.values.byName(json['type']),
+        parts = (json['parts'] as List<dynamic>)
+            .map((partJson) => Part.fromJson(partJson))
+            .toList();
+}
+
+enum ItemType {
+  warframe,
+  weapon,
 }
 
 /// A weapon or warframe part
 class Part {
   /// What type of part this is (used to grab the right image)
-  PartType type;
+  final PartType type;
 
   /// Required quantity of this [Part] for a set of the [Item] it's a part of
   final int required;
@@ -64,17 +82,11 @@ class Part {
   int owned;
 
   Part({required this.type, required this.required, required this.owned});
-  Part.main(int owned) : this(type: PartType.main, required: 1, owned: owned);
-}
 
-/// The main [Part] of an item's set
-class MainPart extends Part {
-  final String path;
-
-  MainPart({
-    required int owned,
-    required this.path,
-  }) : super.main(owned);
+  Part.fromJson(Map<String, dynamic> json)
+      : type = PartType.values.byName(json['type']),
+        required = json['required'],
+        owned = json['owned'];
 }
 
 /// Type of a [Part]
