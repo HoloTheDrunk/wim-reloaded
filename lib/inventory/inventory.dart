@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 
@@ -27,14 +26,10 @@ class InventoryGrid extends StatelessWidget {
             childAspectRatio: 3,
           ),
           clipBehavior: Clip.none,
-          itemCount: 10,
+          itemCount: inventory.items.length,
           itemBuilder: (BuildContext context, index) {
             return ItemCard(
-              item: Item(
-                name: "destreza_prime.png",
-                type: ItemType.weapon,
-                parts: [],
-              ),
+              item: inventory.items[index],
             );
           },
         ),

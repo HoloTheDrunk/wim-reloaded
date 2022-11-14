@@ -53,16 +53,16 @@ class Item {
     this.currentPrice,
   });
 
-  String getImagePath() {
-    return "assets/items/${type.name}s/main/$name";
-  }
-
   Item.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         type = ItemType.values.byName(json['type']),
         parts = (json['parts'] as List<dynamic>)
             .map((partJson) => Part.fromJson(partJson))
             .toList();
+
+  String getImagePath() {
+    return "assets/items/${type.name}s/main/$name.png";
+  }
 }
 
 enum ItemType {
@@ -87,11 +87,20 @@ class Part {
       : type = PartType.values.byName(json['type']),
         required = json['required'],
         owned = json['owned'];
+
+  String getImagePath(ItemType itemType) {
+    return "assets/items/${itemType.name}s/parts/${type.name}.png";
+  }
 }
 
 /// Type of a [Part]
 enum PartType {
   main,
+
+  // Warframe parts
+  chassis,
+  neuroptics,
+  systems,
 
   // Gun parts
   barrel,
