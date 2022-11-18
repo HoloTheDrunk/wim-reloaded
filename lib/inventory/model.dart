@@ -42,10 +42,6 @@ class Part {
       : type = PartType.values.byName(json['type']),
         required = json['required'],
         owned = json['owned'];
-
-  String getImagePath(ItemType itemType) {
-    return "assets/items/${itemType.name}s/parts/${type.name}.png";
-  }
 }
 
 /// Type of a [Part]
@@ -72,7 +68,6 @@ enum PartType {
 
 /// Price of an [Item] or [Part]
 class Price {
-  int current;
   int lowest;
 
   /// Average of the prices with a decreasing weight starting from the lowest
@@ -81,7 +76,6 @@ class Price {
   int weightedAverage;
 
   Price({
-    required this.current,
     required this.lowest,
     required this.weightedAverage,
   });

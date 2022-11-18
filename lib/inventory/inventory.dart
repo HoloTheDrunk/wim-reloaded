@@ -19,7 +19,8 @@ class InventoryGrid extends StatelessWidget {
             partCards: item.parts
                 .map((part) => PartCard(
                       itemType: item.type,
-                      part: part,
+                      type: part.type,
+                      required: part.required,
                     ))
                 .toList(),
           ))
