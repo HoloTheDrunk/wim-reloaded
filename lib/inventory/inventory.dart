@@ -1,16 +1,29 @@
+import 'data.dart';
+import 'item.dart';
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-
-import 'item.dart';
 
 class InventoryGrid extends StatelessWidget {
   InventoryGrid({super.key, this.padding});
 
   final double? padding;
-  final Inventory inventory = Inventory.fromJson(
+  final List<ItemCard> items = Inventory.fromJson(
     jsonDecode(File("assets/inventory.json").readAsStringSync()),
-  );
+  )
+      .items
+      .map((item) => ItemCard(
+            name: item.name,
+            type: item.type,
+            partCards: item.parts
+                .map((part) => PartCard(
+                      itemType: item.type,
+                      part: part,
+                    ))
+                .toList(),
+          ))
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +32,16 @@ class InventoryGrid extends StatelessWidget {
         padding: EdgeInsets.all(padding ?? 24.0),
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 200,
+            maxCrossAxisExtent: 400,
             mainAxisExtent: 100,
             crossAxisSpacing: 20,
             mainAxisSpacing: 20,
-            childAspectRatio: 3,
+            childAspectRatio: 10,
           ),
           clipBehavior: Clip.none,
-          itemCount: inventory.items.length,
+          itemCount: items.length,
           itemBuilder: (BuildContext context, index) {
-            return ItemCard(
-              item: inventory.items[index],
-            );
+            return items[index];
           },
         ),
       ),

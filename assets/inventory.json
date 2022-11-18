@@ -1,0 +1,23 @@
+[
+    {
+        "name": "destreza_prime",
+        "type": "weapon",
+        "parts": [
+            {
+                "type": "blade",
+                "required": 1,
+                "owned": 1
+            },
+            {
+                "type": "handle",
+                "required": 1,
+                "owned": 0
+            },
+            {
+                "type": "plug",
+                "required": 1,
+                "owned": 0
+            }
+        ]
+    }
+]

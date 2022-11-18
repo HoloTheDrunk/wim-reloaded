@@ -1,36 +1,74 @@
+import '../utils.dart';
+import 'data.dart';
+
 import 'package:flutter/material.dart';
+
+import 'package:simple_shadow/simple_shadow.dart';
 
 /// A card displaying information about a set and buttons to edit owned
 /// quantities and fetch prices from warframe.market
 class ItemCard extends StatefulWidget {
-  const ItemCard({super.key, required this.item});
+  const ItemCard({
+    super.key,
+    required this.type,
+    required this.name,
+    required this.partCards,
+  });
 
-  final Item item;
+  final ItemType type;
+  final String name;
+  final List<PartCard> partCards;
+
+  String getImagePath() {
+    return "assets/items/${type.name}s/main/$name.png";
+  }
 
   @override
   State<ItemCard> createState() => _ItemCardState();
 }
 
 class _ItemCardState extends State<ItemCard> {
+  Price price = Price(current: 0, lowest: 0, weightedAverage: 0);
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
+    return Card(
+      semanticContainer: false,
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [BoxShadow(blurRadius: 4.0)],
-        color: Colors.blueGrey,
       ),
       // Row(Image, Column(Row(Image), Row(Text)))
+      elevation: 10,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          // Main part image
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100.0)),
-                  boxShadow: [BoxShadow(blurRadius: 4.0, color: Colors.cyan)]),
-              child: Image.asset(widget.item.getImagePath()),
+            child: SimpleShadow(
+              color: Colors.lightBlueAccent,
+              offset: const Offset(0, 0),
+              sigma: 5,
+              child: Image.asset(widget.getImagePath()),
             ),
+          ),
+
+          // Parts and prices
+          Column(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Row(children: widget.partCards),
+              ),
+              Center(
+                child: Expanded(
+                  flex: 1,
+                  child: Text(
+                    widget.name.replaceAll('_', ' ').toTitleCase(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -38,96 +76,24 @@ class _ItemCardState extends State<ItemCard> {
   }
 }
 
-/// A set comprised of a main blueprint path and [Part]s, along with nullable
-/// price information
-class Item {
-  final ItemType type;
-  final String name;
-  final List<Part> parts;
-  Price? currentPrice;
+class PartCard extends StatefulWidget {
+  const PartCard({super.key, required this.part, required this.itemType});
 
-  Item({
-    required this.type,
-    required this.name,
-    required this.parts,
-    this.currentPrice,
-  });
+  final Part part;
+  final ItemType itemType;
 
-  Item.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        type = ItemType.values.byName(json['type']),
-        parts = (json['parts'] as List<dynamic>)
-            .map((partJson) => Part.fromJson(partJson))
-            .toList();
+  @override
+  State<PartCard> createState() => _PartCardState();
+}
 
-  String getImagePath() {
-    return "assets/items/${type.name}s/main/$name.png";
+class _PartCardState extends State<PartCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
+      child: Image.asset(widget.part.getImagePath(widget.itemType)),
+    );
   }
-}
-
-enum ItemType {
-  warframe,
-  weapon,
-}
-
-/// A weapon or warframe part
-class Part {
-  /// What type of part this is (used to grab the right image)
-  final PartType type;
-
-  /// Required quantity of this [Part] for a set of the [Item] it's a part of
-  final int required;
-
-  /// Owned quantity of this [Part]
-  int owned;
-
-  Part({required this.type, required this.required, required this.owned});
-
-  Part.fromJson(Map<String, dynamic> json)
-      : type = PartType.values.byName(json['type']),
-        required = json['required'],
-        owned = json['owned'];
-
-  String getImagePath(ItemType itemType) {
-    return "assets/items/${itemType.name}s/parts/${type.name}.png";
-  }
-}
-
-/// Type of a [Part]
-enum PartType {
-  main,
-
-  // Warframe parts
-  chassis,
-  neuroptics,
-  systems,
-
-  // Gun parts
-  barrel,
-  receiver,
-  stock,
-
-  // Melee parts
-  blade,
-  handle,
-
-  // Other
-  plug,
-}
-
-/// Price of an [Item] or [Part]
-class Price {
-  int current;
-  int lowest;
-
-  /// Average of the prices with a decreasing weight starting from the lowest
-  /// price down to the 10th lowest (or less if there are less than 10 sell
-  /// orders)
-  int weightedAverage;
-
-  Price({
-    required this.current,
-    required this.lowest,
-    required this.weightedAverage,
-  });
 }
