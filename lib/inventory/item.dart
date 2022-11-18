@@ -1,5 +1,5 @@
 import '../utils.dart';
-import 'data.dart';
+import 'model.dart';
 
 import 'package:flutter/material.dart';
 
